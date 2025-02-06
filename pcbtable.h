@@ -73,6 +73,10 @@ public:
      * @param idx The index of the new PCB in the PCBTable
      */
     void addNewPCB(unsigned int pid, unsigned int priority, unsigned int idx) {
+        if (idx >= tableSize) {
+        std::cout << "Error: Index out of bounds when adding new PCB." << std::endl;
+        return;
+    }
         PCB *pcb = new PCB(pid, priority);
         addPCB(pcb, idx);
     }

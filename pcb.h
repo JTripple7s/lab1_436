@@ -92,6 +92,10 @@ public:
      */
     void setPriority(unsigned int priority) {
         // TODO: add your code here
+        if(priority < 1 || priority > 50){
+            cerr << "Priority error";
+            return;
+        }
         this->priority = priority;
     }
 

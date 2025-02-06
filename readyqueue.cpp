@@ -9,9 +9,9 @@ using namespace std;
 /**
  * @brief Constructor for the ReadyQueue class.
  */
- ReadyQueue::ReadyQueue()  {
-     //TODO: add your code here
- }
+ReadyQueue::ReadyQueue() {
+    this->count = 0;
+}
 
 /**
  *@brief Destructor
@@ -20,21 +20,49 @@ ReadyQueue::~ReadyQueue() {
     //TODO: add your code to release dynamically allocate memory
 }
 
+void ReadyQueue::heapifyUp(int index) {
+    while (index > 0) {
+        int parent = (index - 1) / 2;
+        if (PCBheap[parent]->priority >= PCBheap[index]->priority)
+            break;
+        swap(PCBheap[parent], PCBheap[index]);
+        index = parent;
+    }
+}
+
+void ReadyQueue::heapifyDown(int index) {
+    while (2 * index + 1 < count) {
+        int left = 2 * index + 1;
+        int right = 2 * index + 2;
+        int largest = left;
+        if (right < count && PCBheap[right]->priority > PCBheap[left]->priority)
+            largest = right;
+        if (PCBheap[index]->priority >= PCBheap[largest]->priority)
+            break;
+        swap(PCBheap[index], PCBheap[largest]);
+        index = largest;
+    }
+}
+
 /**
  * @brief Add a PCB representing a process into the ready queue.
  *
  * @param pcbPtr: the pointer to the PCB to be added
  */
-void ReadyQueue::addPCB(PCB *pcbPtr) {
-    //TODO: add your code here
-    // When adding a PCB to the queue, you must change its state to READY.
-    priQueue.push_back(pcbPtr);
-        index = priQueue.size() - 1;
+void ReadyQueue::addPCB(PCB* pcbPtr) {
+    if (pcbPtr == nullptr) {
+        cout << "error: PCB pointer null" << endl;
+        return;
+    }
+    if (count >= 100) {
+        cout << "Readyqueue is full" << endl;
+        return;
+    }
 
-    while (index > 0 && priQueue[(index - 1) / 2] < priQueue[index]) {
-            swap(priQueue[index], priQueue[(index - 1) / 2]);
-            index = (index - 1) / 2;
-        }
+    pcbPtr->setState(ProcState::READY);
+    PCBheap[count] = pcbPtr;
+    heapifyUp(count);
+    count++;
 }
 
 /**
@@ -43,8 +71,21 @@ void ReadyQueue::addPCB(PCB *pcbPtr) {
  * @return PCB*: the pointer to the PCB with the highest priority
  */
 PCB* ReadyQueue::removePCB() {
-    //TODO: add your code here
-    // When removing a PCB from the queue, you must change its state to RUNNING.
+    if (count == 0) {
+        cout << "error: readyQueue is empty" << endl;
+        return nullptr;
+    }
+
+    PCB* highest = PCBheap[0];
+    if (highest == nullptr) {
+        cout << "Error: The PCB at index 0 is null!" << endl;
+        return nullptr;
+    }
+
+    highest->setState(ProcState::RUNNING);
+    PCBheap[0] = PCBheap[--count];
+    heapifyDown(0);
+    return highest;
 }
 
 /**
@@ -53,12 +94,14 @@ PCB* ReadyQueue::removePCB() {
  * @return int: the number of PCBs in the queue
  */
 int ReadyQueue::size() {
-    //TODO: add your code here
+    return this->count;
 }
 
 /**
  * @brief Display the PCBs in the queue.
  */
 void ReadyQueue::displayAll() {
-    //TODO: add your code here
+    for (int i = 0; i < count; i++) {
+        PCBheap[i]->display();
+    }
 }

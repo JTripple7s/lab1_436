@@ -10,7 +10,6 @@
 // Remember to add sufficient comments to your code
 #pragma once
 
-#include<vector>
 #include "pcb.h"
 
 /**
@@ -21,8 +20,21 @@ class ReadyQueue {
 private:
     // TODO: add your private member variables here
     // choose a data structure for the ReadyQueue. No STL class is allowed.
-    vector<PCB*> priQueue;
-    int index;
+    PCB* PCBheap[100];
+    int count;
+    /**
+     * @brief Sorts the heap upwards if insersion was less then node
+     * 
+     *@param index: the index insersion
+     */
+    void heapifyUp(int index);
+
+    /**
+     * @brief Sorts the heap upwards if insersion was greater then node
+     * 
+     *@param index: the index insersion
+     */
+    void heapifyDown(int index);
 
 public:
     /**

@@ -17,6 +17,7 @@
 PCBTable::PCBTable(int size) {
    // TODO: add your code here
    this->tableSize = size;
+   tableMain.reserve(size);
 }
 
 /**
@@ -27,8 +28,9 @@ PCBTable::~PCBTable() {
    // TODO: add your code here
    // Delete all the PCBs in the table
     for(int i = 0; i < this->tableSize; i++){
-        this->tableMain.pop_back();
+        delete tableMain[i];
     }
+    tableMain.clear();
    }
 
 /**
@@ -39,9 +41,10 @@ PCBTable::~PCBTable() {
  */
 PCB* PCBTable::getPCB(unsigned int idx) {
     // TODO: add your code here
-    if(tableMain[idx] != nullptr){
-        return this->tableMain[idx];
+    if(idx < tableMain.size() && tableMain[idx] != nullptr){
+        return tableMain[idx];
     }
+    cout << "Nullptr out of bounds" << endl;
     return nullptr;
 }
 
@@ -53,5 +56,16 @@ PCB* PCBTable::getPCB(unsigned int idx) {
 void PCBTable::addPCB(PCB *pcb, unsigned int idx) {
     // TODO: add your code here
     // Add a PCB pointer to the PCBTable at index idx.
-    this->tableMain.insert(tableMain.begin() + idx, pcb);
+    if(idx > static_cast<unsigned int>(tableSize)){
+        cout << "cannot add at " + idx << endl;
+        return;
+    }
+    if (idx < static_cast<unsigned int>(tableSize)) {
+            // Make sure the vector is large enough to accommodate the index
+            if (tableMain.size() <= idx) {
+                tableMain.resize(idx + 1, nullptr);  // Resize the vector to hold the index
+            }
+            tableMain[idx] = pcb;  // Assign the PCB at the specified index
+        }
+
 }
