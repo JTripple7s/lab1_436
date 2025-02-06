@@ -10,14 +10,19 @@ using namespace std;
  * @brief Constructor for the ReadyQueue class.
  */
 ReadyQueue::ReadyQueue() {
-    this->count = 0;
+    count = 0;
+    capacity = 100; // keep the heap small so that runtime increases, resize for more space
+    PCBheap = new PCB * [capacity];
 }
 
 /**
  *@brief Destructor
 */
 ReadyQueue::~ReadyQueue() {
-    //TODO: add your code to release dynamically allocate memory
+    for(int i = 0; i < count; i++){
+        delete PCBheap[i];
+    }
+    delete[] PCBheap;
 }
 
 void ReadyQueue::heapifyUp(int index) {
@@ -54,9 +59,8 @@ void ReadyQueue::addPCB(PCB* pcbPtr) {
         cout << "error: PCB pointer null" << endl;
         return;
     }
-    if (count >= 100) {
-        cout << "Readyqueue is full" << endl;
-        return;
+    if(count >= capacity){
+        resize();
     }
 
     pcbPtr->setState(ProcState::READY);
@@ -104,4 +108,15 @@ void ReadyQueue::displayAll() {
     for (int i = 0; i < count; i++) {
         PCBheap[i]->display();
     }
+}
+
+void ReadyQueue::resize(){
+    capacity *= 2; // double the size of heap if needed
+    PCB** newHeap = new PCB * [capacity];
+
+    for (int i = 0; i < count; i++) {
+        newHeap[i] = PCBheap[i];
+    }
+    delete[] PCBheap;
+    PCBheap = newHeap;
 }

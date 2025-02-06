@@ -68,4 +68,6 @@ int main(int argc, char *argv[]) {
     cout << "Final ReadyQueue size = " << q2.size() << endl;
     cout << "# of removes = " << remove_count << ", # of inserts = " << insert_count << endl;
     q2.displayAll();
+
+    return 0;
 }

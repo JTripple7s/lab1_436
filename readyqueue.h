@@ -18,10 +18,9 @@
  */
 class ReadyQueue {
 private:
-    // TODO: add your private member variables here
-    // choose a data structure for the ReadyQueue. No STL class is allowed.
-    PCB* PCBheap[100];
+    PCB** PCBheap;
     int count;
+    int capacity;
     /**
      * @brief Sorts the heap upwards if insersion was less then node
      * 
@@ -35,6 +34,8 @@ private:
      *@param index: the index insersion
      */
     void heapifyDown(int index);
+
+    void resize();
 
 public:
     /**
